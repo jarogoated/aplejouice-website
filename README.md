@@ -21,7 +21,11 @@ The current website uses the project logo, native pixel icons and real in-game s
 
 ### Vercel
 
-Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` selects the Other/static preset, skips install/build commands, and serves the existing `dist/` directory. No environment variables are required. Deployment access is configured separately in the Vercel project settings.
+Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` installs the pinned middleware dependency and serves `dist/` without a build step.
+
+The root middleware protects pages and assets with a server-verified passcode. Configure `SITE_ACCESS_CONFIG` as a secret environment variable containing JSON with a random 16-byte hexadecimal `salt`, a 32-byte hexadecimal scrypt `hash` of the passcode using that salt, and a separate random 32-byte hexadecimal signing `key`. Never commit the live configuration or passcode. Missing configuration fails closed. Sessions expire after eight hours and use a signed, host-bound, Secure/HttpOnly/SameSite cookie. Invalid login attempts are limited per IP within each running instance; this is not a global distributed rate limit.
+
+Run `npm test` to check the access boundary, invalid/expired/tampered sessions, login origin checks, and logout. The public holding page says “In Bearbeitung · Beta” and links to Modrinth. The only public project asset is the logo.
 
 ### Sites
 

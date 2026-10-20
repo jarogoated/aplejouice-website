@@ -8,6 +8,7 @@ body{background:#0c0d10;color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
 .demo-section{color:var(--ink)}
 
 /* Restrained product presentation. */
+.work-notice{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:20px;font-size:11px;color:#d5a37d}.work-notice button{background:transparent;border:1px solid #45403c;color:#b7aaa0;padding:6px 10px;border-radius:4px;font-size:10px}.work-notice button:hover{border-color:#cd8b54;color:#efb17d}
 body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 h1,h2{font-family:inherit;letter-spacing:-1.4px}
 .hero{min-height:540px;grid-template-columns:.9fr 1.1fr;gap:55px;padding-block:70px}
