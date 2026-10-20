@@ -24,4 +24,10 @@ Use case: stylized-concept. Asset type: transparent hero illustration for the Ap
 
 ## Hosting
 
+### Vercel
+
+Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` selects the Other/static preset, skips install/build commands, and serves the existing `dist/` directory. No environment variables are required. Deployment access is configured separately in the Vercel project settings.
+
+### Sites
+
 Site identity and static deployment configuration are in `.openai/hosting.json`. Source synchronization and deployments use the Sites plugin helpers. Credentials are supplied through session stdin only.
