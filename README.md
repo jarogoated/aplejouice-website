@@ -6,14 +6,9 @@ Design: original dark/orange Aplejouice treatment inspired by the visual directi
 
 Includes a browser-local counter demo, keyboard-accessible screenshot tabs, responsive layouts, installation instructions and native FAQ disclosures. The demo does not connect to Minecraft or send tracking data.
 
-## Hero artwork
+## Visuals
 
-Saved asset: `dist/assets/hero-character.png`.
-Created with the built-in image_gen tool using the imagegen skill. Original transparent illustration, separate from in-game screenshots.
-
-Final generation prompt:
-
-Use case: stylized-concept. Asset type: transparent hero illustration for the Aplejouice Minecraft mod website. Create an original high quality cinematic 3D voxel Minecraft adventurer with cuboid head, brown hair, warm orange hoodie with cream trim, charcoal trousers and white shoes, confidently in a dynamic mid-air combat stance, holding a glowing golden-orange pixel sword diagonally up toward the upper left in one hand and a small teal ender pearl in the other. Full body visible, three-quarter view, character oriented slightly toward the left. Floating few golden cubes and small subtle orange spark particles around the character, warm amber rim lighting, subtle cool secondary light, polished blocky materials, dramatic crisp shadows. Character centered, isolated genuinely transparent background, suitable overlay on almost black website, no ground plane, no environment, no text, no logos, no crown, no watermark. Render at high detail with clean recognizable block geometry; square composition with room around sword and feet.
+The current website uses the project logo, native pixel icons and real in-game screenshots from the mod. The generated hero character has been removed. System fonts are used, with no external font requests.
 
 ## Validation
 
