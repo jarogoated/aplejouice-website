@@ -82,3 +82,13 @@ test('release admin returns after login and never permits arbitrary redirect des
     assert.equal(admin.status,200); assert.match(await admin.text(), /Version auf GitHub hochladen/);
   }
 });
+test('legal notice is public while preview content remains protected',async()=>{
+ let target;
+ const gate=make({rewrite:url=>{target=url.pathname;return new Response('legal document');}});
+ for(const path of ['/impressum','/impressum.html']){
+  assert.equal((await gate(request(path))).status,200);
+  assert.equal(target,'/impressum.html');
+ }
+ assert.equal((await gate(request('/'))).status,401);
+ assert.match(await (await gate(request('/'))).text(),/href="\/impressum"/);
+});
