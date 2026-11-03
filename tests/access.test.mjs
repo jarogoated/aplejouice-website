@@ -67,3 +67,17 @@ test('logout expires the session cookie', async () => {
   assert.equal(response.status, 303);
   assert.match(response.headers.get('Set-Cookie'), /Max-Age=0/);
 });
+
+test('release admin returns after login and never permits arbitrary redirect destinations', async () => {
+  const gate = make();
+  assert.match(await (await gate(request('/release-admin'))).text(), /name="next" value="\/release-admin"/);
+  for (const destination of ['/release-admin', 'https://example.org', '//example.org']) {
+    const response = await gate(new Request('https://example.com/_access/login', { method:'POST',
+      headers:{Origin:'https://example.com','Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({passcode,next:destination}) }));
+    assert.equal(response.headers.get('Location'), destination === '/release-admin' ? '/release-admin' : '/');
+    const cookie = response.headers.get('Set-Cookie').split(';')[0];
+    const admin = await gate(request('/release-admin',cookie));
+    assert.equal(admin.status,200); assert.match(await admin.text(), /Version auf GitHub hochladen/);
+  }
+});
