@@ -1,11 +1,16 @@
 {
   "dependencies": {
-    "@vercel/functions": "3.10.1"
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
+    "@vercel/functions": "3.10.6"
   },
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build-locales.mjs",
     "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.15"
   }
 }

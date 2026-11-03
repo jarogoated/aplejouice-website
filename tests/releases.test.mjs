@@ -1,5 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+test('download archive lists stable assets and provides pagination',async()=>{
+ const release=version=>({tag_name:'v'+version,draft:false,prerelease:false,published_at:'2026-01-01',assets:[{name:`Aplejouice-Mod-${version}-mc1.21.11.jar`,state:'uploaded',size:1000,browser_download_url:`https://github.com/jarogoated/aplejouice-mod/releases/download/v${version}/Aplejouice-Mod-${version}-mc1.21.11.jar`}]});
+ const handler=createReleaseRoutes({fetcher:async()=>Response.json([release('1.7.1'),release('1.7.0'),{...release('99.0.0'),draft:true}],{headers:{Link:'<https://api.github.com/next>; rel="next"'}})});
+ const result=await handler(new Request('https://aplejouice.com/downloads/versions'));
+ assert.equal(result.status,200);
+ const html=await result.text();
+ assert.match(html,/Version 1.7.1/);assert.match(html,/Version 1.7.0/);assert.doesNotMatch(html,/99.0.0/);
+ assert.ok(html.includes('/downloads/versions?page=2'));
+});
 import { selectRelease, createReleaseRoutes } from '../lib/releases.mjs';
 import { createGate } from '../lib/access.mjs';
 
