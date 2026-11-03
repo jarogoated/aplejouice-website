@@ -12,25 +12,48 @@ document.getElementById('reset').addEventListener('click', () => {
   Object.keys(counts).forEach(item => { counts[item] = 0; document.getElementById(`count-${item}`).textContent = '0'; });
   document.getElementById('round').textContent = String(++round).padStart(2, '0');
 });
-const tabs = [...document.querySelectorAll('[role="tab"]')];
-function selectTab(tab) {
-  tabs.forEach(item => { const selected = item === tab; item.setAttribute('aria-selected', selected); item.tabIndex = selected ? 0 : -1; });
-  const image = document.getElementById('menu-shot');
-  image.src = `assets/${tab.dataset.shot}`;
-  const english = document.documentElement.lang === 'en';
-  image.alt = tab.dataset.shot === 'menu.png'
-    ? english ? 'Aplejouice menu with item search and a watchlist for cobwebs and ender pearls' : 'Aplejouice-Menü mit Item-Suche und einer Watchlist für Spinnennetze und Enderperlen'
-    : english ? 'Aplejouice display settings with tracking, zero counts, range and opponent mode' : 'Aplejouice-Anzeige-Einstellungen mit Tracking, Nullwerten, Reichweite und Gegner-Modus';
-  document.getElementById('screenshot-panel').setAttribute('aria-labelledby', tab.id);
+const english=document.documentElement.lang==='en';
+const language=english?'en':'de';
+const modules=await (await fetch('assets/modules.json')).json();
+const tabs=[...document.querySelectorAll('[data-module]')];
+function selectModule(tab){
+ tabs.forEach(button=>{const active=button===tab;button.setAttribute('aria-selected',active);button.tabIndex=active?0:-1;});
+ const index=modules.findIndex(module=>module.id===tab.dataset.module), module=modules[index];
+ document.getElementById('module-number').textContent=`0${index+1} / 06`;
+ document.getElementById('module-title').textContent=module[language].title;
+ document.getElementById('module-description').textContent=module[language].description;
+ const image=document.getElementById('menu-shot');image.src=`assets/current/${module.id}-${language}.png`;image.alt=`${module[language].label} · Aplejouice Mod 1.7.0`;
+ document.getElementById('screenshot-panel').setAttribute('aria-labelledby',tab.id);
 }
-tabs.forEach((tab, index) => {
-  tab.addEventListener('click', () => selectTab(tab));
-  tab.addEventListener('keydown', event => {
-    let next;
-    if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
-    if (event.key === 'ArrowLeft') next = tabs[(index + tabs.length - 1) % tabs.length];
-    if (event.key === 'Home') next = tabs[0];
-    if (event.key === 'End') next = tabs[tabs.length - 1];
-    if (next) { event.preventDefault(); selectTab(next); next.focus(); }
-  });
+tabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>selectModule(tab));
+ tab.addEventListener('keydown',event=>{
+ const offset={ArrowRight:1,ArrowLeft:-1}[event.key];
+ const next=offset?tabs[(index+offset+tabs.length)%tabs.length]:event.key==='Home'?tabs[0]:event.key==='End'?tabs.at(-1):null;
+ if(next){event.preventDefault();selectModule(next);next.focus();}
+ });
 });
+const dialog=document.getElementById('screenshot-dialog');
+document.querySelector('.shot-open').addEventListener('click',()=>{
+ const source=document.getElementById('menu-shot'),large=document.getElementById('large-screenshot');large.src=source.src;large.alt=source.alt;dialog.showModal();
+});
+document.getElementById('close-screenshot').addEventListener('click',()=>dialog.close());
+dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+document.querySelector('[data-show-settings]').addEventListener('click',()=>selectModule(tabs.at(-1)));
+const positions={X:111.7,Y:47.2,Z:-79.8};
+document.querySelectorAll('[data-axes]').forEach(button=>button.addEventListener('click',()=>{
+ document.querySelectorAll('[data-axes]').forEach(item=>item.setAttribute('aria-pressed',item===button));
+ document.getElementById('coordinate-value').textContent=[...button.dataset.axes].map(axis=>Math.floor(positions[axis])).join(' ');
+ document.getElementById('copy-result').textContent='';
+}));
+document.getElementById('copy-coordinates').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(document.getElementById('coordinate-value').textContent);document.getElementById('copy-result').textContent=english?'Copied!':'Kopiert!';}
+ catch{document.getElementById('copy-result').textContent=english?'Select and copy the values above.':'Werte oben markieren und kopieren.';}
+});
+const arenas={galaxy:{name:'Galaxy',biome:'Plains',bounds:'Y 37 — 54'},colloseum:{name:'Colloseum',biome:english?'Desert':'Wüste',bounds:'Y 43 — 60'},japan:{name:'Japan',biome:'Cherry',bounds:'Y 38 — 56'}};
+document.querySelectorAll('[data-arena]').forEach(button=>button.addEventListener('click',()=>{
+ document.querySelectorAll('[data-arena]').forEach(item=>item.setAttribute('aria-pressed',item===button));
+ const arena=arenas[button.dataset.arena];
+ const image=document.getElementById('arena-image');image.src=`assets/maps/${button.dataset.arena}.png`;image.alt=`${arena.name} Arena`;
+ document.getElementById('arena-name').textContent=arena.name;document.getElementById('arena-biome').textContent=arena.biome;document.getElementById('arena-bounds').textContent=arena.bounds;
+}));
