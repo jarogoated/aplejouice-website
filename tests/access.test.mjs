@@ -20,6 +20,7 @@ test('anonymous page and direct assets are protected', async () => {
     assert.match(response.headers.get('Cache-Control'), /no-store/);
   }
   assert.equal((await gate(request('/assets/logo.png'))).headers.get('X-Test-Next'), 'yes');
+  assert.equal((await gate(request('/assets/depth.css'))).headers.get('X-Test-Next'), 'yes');
 });
 test('missing or malformed configuration fails closed', async () => {
   for (const value of ['', '{', '{}']) assert.equal((await make({ getConfig: () => value })(request())).status, 503);

@@ -38,3 +38,7 @@ The Vercel project also has an enabled firewall rule named `Passcode login limit
 ### Sites
 
 Site identity and static deployment configuration are in `.openai/hosting.json`. Source synchronization and deployments use the Sites plugin helpers. Credentials are supplied through session stdin only.
+
+## Dimensional redesign
+
+The landing gate, download page and protected feature page share `dist/assets/depth.css`. The dark star field, orange/gold lighting, CSS-built cubes, orbiting logo, dimensional buttons and tilted screenshot frames are original code-native visuals inspired by the user-supplied txthub.store reference. No TxTHub logos or product imagery are reused. Only the shared stylesheet and existing logo are publicly served; private pages and other assets remain protected. Public HTML permits same-origin CSS in CSP without enabling scripts. Reduced-motion preferences disable the animation and transitions. Desktop and 390px mobile layouts, counter/reset and screenshot tabs were checked in the browser.

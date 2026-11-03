@@ -1,0 +1,60 @@
+/* Aplejouice: original dimensional treatment inspired by TxTHub's dark presentation. */
+:root{--depth-orange:#ff9c45;--depth-gold:#ffd39a;--depth-ink:#080a10;--depth-border:#ffffff14}
+html{background:var(--depth-ink);color-scheme:dark;scroll-behavior:smooth}
+body.aple-depth{isolation:isolate;position:relative;overflow-x:clip;background:#080a10;color:#f4f2f0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body.aple-depth:before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 50% 8%,#8b441d26,transparent 58%),radial-gradient(ellipse at 14% 60%,#3323481a,transparent 50%),#080a10}
+body.aple-depth:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.35;background-image:radial-gradient(1px 1px at 17px 31px,#c6b5a8 95%,transparent),radial-gradient(1px 1px at 48px 83px,#8d7969 95%,transparent),radial-gradient(1px 1px at 103px 41px,#fff0 40%,#b09a82 95%,transparent);background-size:157px 151px,223px 193px,331px 271px;mask-image:linear-gradient(#000,transparent 95%)}
+.aple-depth a,.aple-depth button{-webkit-tap-highlight-color:transparent}
+.aple-depth :focus-visible{outline:2px solid #ffd39a;outline-offset:5px}
+.aple-depth>header,.aple-depth .header{background:#080a108c;border-bottom:1px solid #ffffff0c;position:relative;z-index:3}
+.aple-depth>header>img,.aple-depth .brand img{filter:drop-shadow(0 3px 0 #5b2d15) drop-shadow(0 0 15px #f68d3f5c)}
+.aple-depth .button,.gate-page form button{border:1px solid #ffcf815e;border-radius:999px;background:linear-gradient(150deg,#ffc779,#f58b3e 70%,#e97734);color:#29160a;box-shadow:0 5px 0 #823b1d,0 12px 32px #e2783029,inset 0 1px 0 #fff7;font-weight:750;transition:transform .2s,box-shadow .2s;text-decoration:none}
+.aple-depth .button:hover,.gate-page form button:hover{background:linear-gradient(150deg,#ffd398,#ff9e50);transform:translateY(-2px);box-shadow:0 7px 0 #823b1d,0 17px 34px #e2783038}
+.aple-depth .button:active,.gate-page form button:active{transform:translateY(3px);box-shadow:0 2px 0 #823b1d,0 5px 20px #e2783020}
+.aple-depth .brand-scene{height:226px;width:min(430px,100%);position:relative;margin:0 auto 6px;perspective:800px;transform-style:preserve-3d;pointer-events:none}
+.scene-halo{position:absolute;inset:6% 17% 4%;border-radius:50%;background:radial-gradient(ellipse,#f9a04c35,transparent 65%);filter:blur(15px)}
+.scene-disc{position:absolute;left:calc(50% - 61px);top:49px;width:122px;height:122px;border-radius:32px;transform:rotateX(16deg) rotateY(-14deg) rotateZ(-7deg);border:1px solid #ffcb7c46;background:linear-gradient(135deg,#3e2a1e,#13151c 70%);box-shadow:8px 10px 0 #0c0b10,9px 11px 0 #94623a66,0 30px 55px #000b,inset 0 1px 0 #ffec;animation:scene-disc 7s ease-in-out infinite}
+.scene-logo{position:absolute;z-index:5;transform:translateZ(80px);left:calc(50% - 56px);top:44px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(4px 5px 0 #3f260e) drop-shadow(0 0 24px #ffb54880);animation:scene-logo 7s ease-in-out infinite}
+.scene-orbit{position:absolute;left:calc(50% - 130px);top:20px;width:260px;height:200px;border-radius:50%;border:1px solid #ffb85f6b;transform:rotateX(64deg) rotateZ(-19deg);box-shadow:0 0 18px #ff9d3520,inset 0 0 16px #ff9d3515}
+.scene-orbit.second{transform:rotateX(67deg) rotateZ(29deg);width:306px;height:245px;left:calc(50% - 153px);top:-5px;border-color:#b1683538}
+.scene-cube{--s:30px;position:absolute;width:var(--s);height:var(--s);transform-style:preserve-3d;transform:rotateX(-22deg) rotateY(-35deg);animation:scene-cube 8s ease-in-out infinite}
+.scene-cube i{position:absolute;inset:0;border:1px solid #ffd09099;background:linear-gradient(135deg,#ffc575,#ab5424);backface-visibility:hidden;box-shadow:inset 0 0 9px #ffcb7073}
+.scene-cube i:first-child{transform:translateZ(calc(var(--s)/2))}.scene-cube i:nth-child(2){transform:rotateY(90deg) translateZ(calc(var(--s)/2));background:linear-gradient(#ae572a,#613019)}.scene-cube i:nth-child(3){transform:rotateX(90deg) translateZ(calc(var(--s)/2));background:linear-gradient(#ffdb96,#f5a050)}
+.cube-a{left:15%;top:41px}.cube-b{--s:19px;right:16%;top:108px;animation-delay:-3s}.cube-c{--s:12px;right:29%;top:22px;animation-delay:-5s}
+.scene-chip{position:absolute;padding:5px 10px;border:1px solid #ffffff18;background:#11131ce0;box-shadow:3px 4px 0 #030407,0 10px 25px #0006;border-radius:7px;font:600 8px/1.5 system-ui;letter-spacing:1.2px;color:#c3b8ad}
+.chip-a{left:12%;top:145px;transform:rotate(-8deg)}.chip-b{right:10%;top:175px;transform:rotate(8deg)}
+@keyframes scene-logo{0%,100%{transform:translate3d(0,0,80px) rotate(-6deg)}50%{transform:translate3d(0,-11px,80px) rotate(-2deg)}}
+@keyframes scene-disc{0%,100%{transform:translateY(0) rotateX(16deg) rotateY(-14deg) rotateZ(-7deg)}50%{transform:translateY(-7px) rotateX(9deg) rotateY(-5deg) rotateZ(-4deg)}}
+@keyframes scene-cube{0%,100%{transform:translateY(0) rotateX(-22deg) rotateY(-35deg)}50%{transform:translateY(-12px) rotateX(-15deg) rotateY(-52deg)}}
+/* Public release page and owner portal. */
+.download-page>header,.download-page>main,.download-page>footer{width:min(1120px,calc(100% - 48px));margin-left:auto;margin-right:auto}
+.download-page>header{height:86px}.download-page>main{padding:28px 0 76px}
+.download-hero{text-align:center;padding-bottom:34px}.download-hero .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:10px;letter-spacing:1.6px;border:1px solid #ffbd651f;border-radius:999px;background:#ffffff03;padding:7px 14px}
+.download-hero .eyebrow:before{content:"";width:5px;height:5px;border-radius:50%;background:#ffb45f;box-shadow:0 0 11px #ff982e}
+.download-hero h1{font-size:clamp(42px,6.8vw,80px);font-weight:760;letter-spacing:-3.8px;line-height:1.06;margin:20px 0 21px;text-shadow:0 3px 0 #221b17}
+.download-hero h1 span,.aple-depth .hero h1 span{background:linear-gradient(110deg,#ffe6be,#ffbe70 45%,#e87a36);background-clip:text;color:transparent;text-shadow:none}
+.download-hero>p{max-width:590px;margin:0 auto;color:#9296a1;font-size:16px}
+.download-page .release{max-width:900px;margin:20px auto 0;position:relative;padding:32px;border-radius:18px;background:linear-gradient(135deg,#211c18ed,#10131af5 65%);border:1px solid #ffcb6b25;box-shadow:0 8px 0 #040508,0 9px 0 #694b2b4d,0 30px 60px #0007,inset 0 1px 0 #ffe0ba0c;transform:perspective(1200px) rotateX(2deg);transition:transform .3s,box-shadow .3s}
+.download-page .release:hover{transform:perspective(1200px) rotateX(0) translateY(-3px);box-shadow:0 11px 0 #040508,0 12px 0 #694b2b4d,0 38px 65px #0008}
+.download-page .badge{background:#ffb65f0d;color:#e5ba89;border-color:#ffcb6b25}.download-page .hash{margin-bottom:0;color:#787777}.download-page .install{max-width:900px;margin:40px auto 0;padding:26px 30px;border:1px solid #ffffff0c;border-radius:15px;background:#10131b9e}
+.download-page>footer{border-color:#ffffff0d}.download-page a:not(.button){color:#d9b089}.download-page .install p,.download-page .release p{color:#98979b}
+.download-features{max-width:900px;margin:36px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.download-features>div{padding:22px;border:1px solid #ffffff10;border-radius:14px;background:linear-gradient(140deg,#ffffff05,#ffffff01);box-shadow:0 5px 0 #040508}.download-features b{display:block;color:#f1dcc4;font-size:14px}.download-features p{font-size:12px;margin:8px 0 0;color:#8f919b}
+/* The existing beta passcode remains the boundary for the full website. */
+.gate-page>header{width:min(1120px,calc(100% - 48px));margin:0 auto;padding:24px 0}
+.gate-page main{width:min(480px,calc(100% - 40px));margin:0 auto;padding:13px 0 60px;text-align:center}
+.gate-page .brand-scene{height:185px;margin:0 auto -5px;transform:scale(.88);transform-origin:center}
+.gate-page .status{border-color:#ffbd6529;background:#ffbd6507;border-radius:999px;padding:5px 13px;letter-spacing:.5px;font-size:10px;margin-bottom:15px}
+.gate-page h1{font-size:clamp(39px,5vw,58px);line-height:1.05;letter-spacing:-2.5px;color:#fff4e5;margin-bottom:18px;text-shadow:0 3px 0 #271e17}
+.gate-page main>p{color:#90929d;font-size:13px;max-width:380px;margin:0 auto 24px}
+.gate-page form{position:relative;padding:24px 26px 26px;margin-top:26px;text-align:left;border:1px solid #ffbd6526;border-radius:16px;background:linear-gradient(135deg,#231c18ea,#11141bf5);box-shadow:0 7px 0 #040508,0 8px 0 #6a4d2d44,0 25px 45px #0007;transform:perspective(1100px) rotateX(2deg)}
+.gate-page form label{color:#dfc9b5;font-size:12px}.gate-page form input{border-radius:8px;border-color:#ffffff1f;background:#080b118c;font-size:14px;padding:11px 14px}.gate-page form button{padding:11px 14px;font-size:13px}.gate-page .error{font-size:11px}.gate-page main>.hint{margin-top:27px;font-size:11px}.gate-page footer{width:min(1120px,calc(100% - 48px));margin:0 auto;border-color:#ffffff0e;font-size:11px}
+/* Protected feature website: use existing screenshots and interactions in dimensional frames. */
+.feature-page{--paper:#080a10;--ink:#f5ede5;--muted:#97939a;--orange:#ffad61;--line:#ffffff14}
+.feature-page .wrap{width:min(1160px,calc(100% - 64px))}.feature-page .header{height:90px}.feature-page .header nav{gap:26px}.feature-page .brand{color:#fff1e2}
+.feature-page .hero{padding-top:72px;gap:55px;perspective:1400px}.feature-page h1,.feature-page h2{font-family:Inter,system-ui,sans-serif;letter-spacing:-3px;font-weight:750;line-height:1.07}.feature-page .hero h1{font-size:clamp(46px,5.7vw,76px);text-shadow:0 4px 0 #291d14}.feature-page .hero .intro{color:#aaa4a6}.feature-page .hero .intro strong{color:#ffe0b9}
+.feature-page .hero-visual,.feature-page .hero-media{transform-style:preserve-3d}.feature-page .product-preview{transform:perspective(1100px) rotateX(7deg) rotateY(-11deg) rotateZ(2deg);box-shadow:12px 17px 0 #06080e,13px 18px 0 #ffba6338,0 35px 65px #000b;border:1px solid #ffbd6540;border-radius:15px;transition:transform .35s}
+.feature-page .product-preview:hover{transform:perspective(1100px) rotateX(2deg) rotateY(-3deg) rotateZ(0)}
+.feature-page .feature-grid article,.feature-page .detail-row>div{background:linear-gradient(140deg,#221d19,#10141d);border:1px solid #ffffff14;border-radius:14px;box-shadow:0 6px 0 #040508,0 25px 35px #0003;transition:transform .25s}.feature-page .feature-grid article:hover{transform:translateY(-6px) rotateX(2deg)}
+.feature-page .demo-card,.feature-page .interface-figure{box-shadow:0 8px 0 #040508,0 9px 0 #ffba6320,0 30px 55px #0008;border-color:#ffba6329;border-radius:16px;background:#10131b}.feature-page .install-section{background:linear-gradient(145deg,#21170eaa,#0e111bee)}.feature-page .work-notice{border-color:#ffffff0d}.feature-page footer{background:#080a10}
+@media(max-width:700px){.download-page>header,.download-page>main,.download-page>footer{width:calc(100% - 36px)}.download-page>header{height:74px;font-size:14px}.download-page>header>a{font-size:11px}.download-hero h1{letter-spacing:-2px}.download-page .brand-scene{height:190px;transform:scale(.88);transform-origin:top center;margin-bottom:-20px}.download-page .release{padding:23px;transform:none}.download-page .release .button{width:100%;text-align:center}.download-features{grid-template-columns:1fr;gap:12px}.download-features>div{padding:18px}.download-page .install{padding:22px}.feature-page .wrap{width:calc(100% - 36px)}.feature-page .hero{padding-top:35px;gap:40px}.feature-page .product-preview{transform:perspective(900px) rotateX(5deg) rotateY(-5deg)}.gate-page form{padding:22px}.gate-page main{padding-bottom:45px}.gate-page footer{padding-bottom:24px}.scene-chip{letter-spacing:.6px;font-size:7px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.aple-depth *,.aple-depth *:before,.aple-depth *:after{animation:none!important;transition:none!important}.aple-depth .release,.aple-depth .product-preview{transform:none!important}}
