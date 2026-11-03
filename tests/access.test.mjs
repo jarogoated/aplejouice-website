@@ -13,7 +13,7 @@ const login = (value, origin = 'https://example.com') => new Request('https://ex
 
 test('anonymous page and direct assets are protected', async () => {
   const gate = make();
-  for (const path of ['/', '/index.html', '/assets/menu.png', '/app.js', '/style.css', '/unknown']) {
+  for (const path of ['/', '/index.html', '/assets/menu.png', '/app.js', '/style.css', '/unknown', '/release-admin']) {
     const response = await gate(request(path));
     assert.equal(response.status, 401);
     assert.match(await response.text(), /In Bearbeitung · Beta/);

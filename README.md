@@ -19,6 +19,12 @@ The current website uses the project logo, native pixel icons and real in-game s
 
 ## Hosting
 
+## Downloads und Update-Portal
+
+`/downloads` und `/api/mod/latest?minecraft=1.21.11` sind öffentliche, genau abgegrenzte Routen. Die übrige Website und `/release-admin` bleiben passwortgeschützt. `/release-admin` erklärt das Veröffentlichen und führt zum GitHub-Upload; nur GitHub-Projektmitglieder mit Schreibzugriff können Releases veröffentlichen. Keine Upload-Zugangsdaten sind im Frontend hinterlegt.
+
+Quelle: stabile GitHub Releases von `jarogoated/aplejouice-mod`, Tag `vMAJOR.MINOR.PATCH`, JAR `Aplejouice-Mod-MAJOR.MINOR.PATCH-mc1.21.11.jar`. Die höchste numerische passende Version wird für fünf Minuten zwischengespeichert. Ein GitHub-Ausfall liefert beim API-Endpunkt 503, und die Downloadseite bietet einen direkten Link zur Release-Liste. Keine automatische Installation. `npm test` prüft zusätzlich Auswahl, Cache, öffentliche/geschützte Grenzen und Ausfälle.
+
 ### Vercel
 
 Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` installs the pinned middleware dependency and serves `dist/` without a build step.
