@@ -17,7 +17,10 @@ function selectTab(tab) {
   tabs.forEach(item => { const selected = item === tab; item.setAttribute('aria-selected', selected); item.tabIndex = selected ? 0 : -1; });
   const image = document.getElementById('menu-shot');
   image.src = `assets/${tab.dataset.shot}`;
-  image.alt = tab.dataset.shot === 'menu.png' ? 'Aplejouice-Menü mit Item-Suche und einer Watchlist für Spinnennetze und Enderperlen' : 'Aplejouice-Anzeige-Einstellungen mit Tracking, Nullwerten, Reichweite und Gegner-Modus';
+  const english = document.documentElement.lang === 'en';
+  image.alt = tab.dataset.shot === 'menu.png'
+    ? english ? 'Aplejouice menu with item search and a watchlist for cobwebs and ender pearls' : 'Aplejouice-Menü mit Item-Suche und einer Watchlist für Spinnennetze und Enderperlen'
+    : english ? 'Aplejouice display settings with tracking, zero counts, range and opponent mode' : 'Aplejouice-Anzeige-Einstellungen mit Tracking, Nullwerten, Reichweite und Gegner-Modus';
   document.getElementById('screenshot-panel').setAttribute('aria-labelledby', tab.id);
 }
 tabs.forEach((tab, index) => {

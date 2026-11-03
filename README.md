@@ -27,11 +27,11 @@ Quelle: stabile GitHub Releases von `jarogoated/aplejouice-mod`, Tag `vMAJOR.MIN
 
 ### Vercel
 
-Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` installs the pinned middleware dependency and serves `dist/` without a build step.
+Import `jarogoated/aplejouice-website` into Vercel with the repository root as the Root Directory. `vercel.json` installs the pinned middleware dependency and runs `npm run build` to generate the German and English feature pages, then serves `dist/`.
 
 The root middleware protects pages and assets with a server-verified passcode. Configure `SITE_ACCESS_CONFIG` as a secret environment variable containing JSON with a random 16-byte hexadecimal `salt`, a 32-byte hexadecimal scrypt `hash` of the passcode using that salt, and a separate random 32-byte hexadecimal signing `key`. Never commit the live configuration or passcode. Missing configuration fails closed. Sessions expire after eight hours and use a signed, host-bound, Secure/HttpOnly/SameSite cookie. Invalid login attempts are limited per IP within each running instance; this is not a global distributed rate limit.
 
-Run `npm test` to check the access boundary, invalid/expired/tampered sessions, login origin checks, and logout. The public holding page says “In Bearbeitung · Beta” and links to Modrinth. The only public project asset is the logo.
+Run `npm test` to check the access boundary, invalid/expired/tampered sessions, login origin checks, and logout. The public holding page says “In Bearbeitung · Beta” and links to Modrinth. The logo and shared visual stylesheet are public; private screenshots and application assets remain protected.
 
 The Vercel project also has an enabled firewall rule named `Passcode login limit`, matching `/_access/login` and returning HTTP 429 above 10 requests per IP per 600-second window. This hosting rule applies without redeploying. The login uses a same-origin referrer policy so browser form POSTs retain the Origin header needed for CSRF validation.
 
@@ -42,3 +42,7 @@ Site identity and static deployment configuration are in `.openai/hosting.json`.
 ## Dimensional redesign
 
 The landing gate, download page and protected feature page share `dist/assets/depth.css`. The dark star field, orange/gold lighting, CSS-built cubes, orbiting logo, dimensional buttons and tilted screenshot frames are original code-native visuals inspired by the user-supplied txthub.store reference. No TxTHub logos or product imagery are reused. Only the shared stylesheet and existing logo are publicly served; private pages and other assets remain protected. Public HTML permits same-origin CSS in CSP without enabling scripts. Reduced-motion preferences disable the animation and transitions. Desktop and 390px mobile layouts, counter/reset and screenshot tabs were checked in the browser.
+
+## Website language
+
+The header on every HTML page offers DE / EN. The choice is stored for one year in the host-only Secure/HttpOnly/SameSite language cookie. Both languages are rendered on the server: middleware rewrites an authenticated English feature page to the generated `index.en.html`, while passcode pages, errors, downloads and the release portal are localized dynamically. Language changes never bypass login and accept only known same-site return paths. JSON update metadata remains identical in both languages. Edit German source HTML and `lib/i18n.mjs`, then run `npm run build` before previewing. Demo numbers, screenshot controls and the 3D scene are preserved.
