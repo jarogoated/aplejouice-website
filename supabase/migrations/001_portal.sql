@@ -47,6 +47,7 @@ create table if not exists private.portal_audit(
  id bigint generated always as identity primary key,
  actor uuid, report_id uuid, old_status text,new_status text, changed_at timestamptz default now()
 );
+alter table private.portal_audit enable row level security;
 revoke all on private.portal_audit from public,anon,authenticated;
 create or replace function private.protect_report() returns trigger
 language plpgsql security definer set search_path='' as $$
