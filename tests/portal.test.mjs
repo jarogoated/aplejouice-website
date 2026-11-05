@@ -66,6 +66,13 @@ test('real SDK OAuth start uses PKCE and server-only cookies',async()=>{
  assert.match(response.headers.get('Set-Cookie'),/code-verifier/);
  assert.match(response.headers.get('Set-Cookie'),/HttpOnly/);
 });
+test('an upstream provider failure is not misreported as an expired user link',async()=>{
+ const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>client()});
+ const response=await handle(request('/auth/callback?error=server_error&error_description=%3Cscript%3Ebad%3C%2Fscript%3E'));
+ assert.equal(response.status,502);const html=await response.text();
+ assert.match(html,/Verbindung zum Anmeldeanbieter/);assert.doesNotMatch(html,/abgelaufen|<script>bad/);
+ assert.equal((await handle(request('/auth/callback?error=access_denied'))).status,400);
+});
 test('profile settings discard privilege and ownership fields from a user submission',async()=>{
  const fake=client(),handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
  const response=await handle(request('/portal/settings',{username:'Player_01',bio:'My profile',avatar_source:'initials',user_id:'other-user',role:'admin'}));
