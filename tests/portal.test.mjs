@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createPortalRoutes,portalConfig,validateReport} from '../lib/portal.mjs';
 const config={url:'https://example.supabase.co',key:'public-key-only',origin:'https://aplejouice.com',providers:['discord','email']};
 const request=(path,form,origin='https://aplejouice.com')=>new Request('https://aplejouice.com'+path,form?{method:'POST',headers:{Origin:origin,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(form)}:{});
-const user={id:'11111111-1111-1111-1111-111111111111',email:'test@example.com',email_confirmed_at:'2026-01-01',user_metadata:{role:'admin',provider_id:'928019899211743305'}};
+const user={id:'11111111-1111-1111-1111-111111111111',identities:[{provider:'discord',provider_id:'928019899211743305'}],email:'test@example.com',email_confirmed_at:'2026-01-01',user_metadata:{role:'admin',provider_id:'928019899211743305'}};
 function client({signedIn=true,owner=false,admin=false,reports=[],profile=null}={}){
  const calls=[];const query={select(){return this;},eq(){return this;},neq(){return this;},order(){return this;},range(){return Promise.resolve({data:reports});},limit(){return Promise.resolve({data:reports});},maybeSingle(){return Promise.resolve({data:profile});},insert(value){calls.push(value);return Promise.resolve({data:null,error:null});}};
  return{calls,auth:{getUser:async()=>({data:{user:signedIn?user:null}}),mfa:{listFactors:async()=>({data:{totp:[],all:[]}})}},from:()=>query,rpc:async name=>({data:name==='portal_is_owner'?owner:admin})};
@@ -114,4 +114,10 @@ test('clan application login preserves a fixed safe destination and admin labels
  const login=await (await anonymous(request('/clan/apply'))).text();assert.match(login,/name="next" value="\/clan\/apply"/);
  const fake=client({owner:true,admin:true,reports:[{id:'11111111-abcd-abcd-abcd-111111111111',title:'Clan-Bewerbung · Test',description:'<script>unsafe</script>',kind:'feedback',mod_version:'clan-application-v1',status:'open',reply:'',created_at:'2026-11-05'}]});
  const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});const html=await(await handle(request('/270211?section=applications'))).text();assert.match(html,/Clan-Bewerbungen/);assert.match(html,/&lt;script&gt;unsafe/);assert.doesNotMatch(html,/<script>unsafe/);
+});
+
+test('clan applications reject accounts without a verified Discord identity',async()=>{
+ const fake=client();fake.auth.getUser=async()=>({data:{user:{...user,identities:[{provider:'email'}]}}});
+ const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
+ assert.equal((await handle(request('/clan/apply'))).status,403);assert.equal((await handle(request('/portal/application',{minecraft:'RealPlayer'}))).status,403);assert.equal(fake.calls.length,0);
 });
