@@ -19,6 +19,7 @@ test('cross-origin requests, unsupported methods and GET mutations are rejected 
  const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>{throw new Error('must not run');}});
  assert.equal((await handle(request('/portal/moderate',{id:'x'},'https://evil.example'))).status,403);
  assert.equal((await handle(request('/auth/provider'))).status,405);
+ assert.equal((await handle(request('/auth/provider',{provider:'discord'},'null'))).status,403);
  assert.equal((await handle(new Request('https://aplejouice.com/account',{method:'DELETE'}))).status,405);
 });
 test('forged admin metadata never authorizes admin reads or writes',async()=>{
@@ -86,5 +87,6 @@ test('profile rendering escapes text and account summary never returns email or 
  const account=await handle(request('/account'));const html=await account.text();
  assert.match(html,/&lt;script&gt;bad&lt;\/script&gt;/);assert.doesNotMatch(html,/<script>bad/);
  assert.match(account.headers.get('Content-Security-Policy'),/script-src 'self'/);
+ assert.equal(account.headers.get('Referrer-Policy'),'same-origin');
  const summary=await(await handle(request('/portal/me'))).json();assert.equal(summary.displayName,'SafePlayer');assert.equal(summary.email,undefined);assert.equal(summary.bio,undefined);assert.equal(summary.owner,false);
 });
