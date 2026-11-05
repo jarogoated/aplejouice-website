@@ -115,3 +115,8 @@ body.aple-depth:after{content:"";position:fixed;inset:0;z-index:-1;pointer-event
 @media(prefers-reduced-motion:reduce){.account-panel:not([hidden]){animation:none}}
 
 body.aple-depth.portal-page:before{background:linear-gradient(110deg,#17362c88,#53351466 50%,#17202a99),url('/assets/maps/japan.png') center/cover!important;opacity:.55;filter:blur(28px) saturate(.65)}
+
+/* Account control at the top right on every viewport. */
+.feature-page .header>.account-menu{order:5;margin:0 0 0 14px}.feature-page .account-dropdown{left:auto;right:0}.portal-page>header .portal-account-link{order:5;margin-left:8px}.portal-page>header .portal-brand{margin-left:0;margin-right:auto}.portal-page>header>nav{margin-left:auto}
+@media(max-width:900px){.feature-page .header>.account-menu{margin:0 0 0 8px}}
+@media(max-width:650px){.feature-page .header>.account-menu{order:2;margin:0 0 0 auto}.feature-page .header>.nav-download{order:1}.feature-page .header nav{order:3}.portal-page>header .portal-account-link{margin-left:auto}.portal-page>header>nav{margin-left:0}}
