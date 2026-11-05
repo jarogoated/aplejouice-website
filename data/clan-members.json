@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "name": "random_mc_guy",
+    "uuid": "d8339eebc8fa45d9ade96a155ae73448",
+    "rank": "Leader",
+    "head": "/assets/clan/random_mc_guy.png"
+  },
+  {
+    "name": "Gidus13",
+    "uuid": "4e7f64bcd2384233b3c50423fa7ae0a7",
+    "rank": "Co-Leader",
+    "head": "/assets/clan/Gidus13.png"
+  },
+  {
+    "name": "jarogoated",
+    "uuid": "36a33598d0474611bac5de7b67bf6fbd",
+    "rank": "Co-Leader",
+    "head": "/assets/clan/jarogoated.png"
+  }
+]
