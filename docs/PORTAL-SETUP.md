@@ -5,7 +5,7 @@ Die Website enthält das Portal bereits. Ohne Konfiguration bleiben Anmeldung un
 ## 1. Supabase
 
 1. Ein Projekt in der EU-Region anlegen. Vor einem kostenpflichtigen Tarif selbst die Kosten prüfen.
-2. `supabase/migrations/001_portal.sql` einmal vollständig im SQL Editor ausführen. Die Migration ist für eine neue Datenbank gedacht.
+2. `supabase/migrations/001_portal.sql` und danach `supabase/migrations/002_profiles.sql` jeweils einmal vollständig im SQL Editor ausführen. Die Migration ist für eine neue Datenbank gedacht.
 3. In Vercel ausschließlich folgende serverseitigen Umgebungsvariablen setzen:
    - `SUPABASE_URL`: `https://PROJEKT.supabase.co`
    - `SUPABASE_PUBLISHABLE_KEY`: der **publishable** Key; alternativ der alte `anon` Key. Keinen Secret-/service_role-Key verwenden.
@@ -51,3 +51,11 @@ Vor Freischaltung in der eigenen Supabase-Testumgebung die SQL-Checks aus `supab
 ## Wiederherstellung
 
 Wenn der Authenticator verloren geht, Faktor ausschließlich im eigenen Supabase-Dashboard nach Kontoprüfung zurücksetzen. Keine Recovery-Abkürzung anhand von URL, E-Mail oder Benutzername einbauen. Supabase-/Vercel-Zugriffe und Secrets nicht weitergeben.
+
+## Profile und Bilder
+
+`002_profiles.sql` ergänzt Benutzernamen (3–20 ASCII-Zeichen, ohne Groß-/Kleinschreibungs-Duplikate), einen kurzen Profiltext und eine Profilbild-Auswahl. Die vorhandenen RLS-Regeln bleiben auf das eigene Profil beschränkt. Namen oder Bilder erteilen keine Adminrechte.
+
+Eigene Bilder werden im Browser zentriert zugeschnitten und als 128×128-PNG übertragen. Der Server prüft Signatur, Chunk-CRC, erlaubte Chunk-Typen, Bildmaße und die begrenzte entpackte Pixelmenge. SVG-, Metadaten- und Animations-Uploads sind ausgeschlossen. Der PNG-Inhalt wird privat beim eigenen Profil gespeichert; die Bildroute braucht eine angemeldete Sitzung. Originaldatei und Dateiname werden nicht hochgeladen.
+
+Die Datenschutzhinweise unter `/datenschutz` beschreiben die aktuelle Verwendung von Hosting, Konten, Profilen und Reports. Die tatsächlich gewählte Supabase-Region ist London (UK), nicht Deutschland. Weitere Anbieter werden nur nach eigener Konfiguration über `PORTAL_PROVIDERS` aktiviert.

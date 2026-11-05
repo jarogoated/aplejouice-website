@@ -4,8 +4,8 @@ import {createPortalRoutes,portalConfig,validateReport} from '../lib/portal.mjs'
 const config={url:'https://example.supabase.co',key:'public-key-only',origin:'https://aplejouice.com',providers:['discord','email']};
 const request=(path,form,origin='https://aplejouice.com')=>new Request('https://aplejouice.com'+path,form?{method:'POST',headers:{Origin:origin,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(form)}:{});
 const user={id:'11111111-1111-1111-1111-111111111111',email:'test@example.com',email_confirmed_at:'2026-01-01',user_metadata:{role:'admin',provider_id:'928019899211743305'}};
-function client({signedIn=true,owner=false,admin=false,reports=[]}={}){
- const calls=[];const query={select(){return this;},eq(){return this;},order(){return this;},range(){return Promise.resolve({data:reports});},limit(){return Promise.resolve({data:reports});},maybeSingle(){return Promise.resolve({data:null});},insert(value){calls.push(value);return Promise.resolve({data:null,error:null});}};
+function client({signedIn=true,owner=false,admin=false,reports=[],profile=null}={}){
+ const calls=[];const query={select(){return this;},eq(){return this;},order(){return this;},range(){return Promise.resolve({data:reports});},limit(){return Promise.resolve({data:reports});},maybeSingle(){return Promise.resolve({data:profile});},insert(value){calls.push(value);return Promise.resolve({data:null,error:null});}};
  return{calls,auth:{getUser:async()=>({data:{user:signedIn?user:null}}),mfa:{listFactors:async()=>({data:{totp:[],all:[]}})}},from:()=>query,rpc:async name=>({data:name==='portal_is_owner'?owner:admin})};
 }
 test('unconfigured accounts fail closed and do not save reports',async()=>{
@@ -64,4 +64,27 @@ test('real SDK OAuth start uses PKCE and server-only cookies',async()=>{
  assert.match(body,/code_challenge=/);
  assert.match(response.headers.get('Set-Cookie'),/code-verifier/);
  assert.match(response.headers.get('Set-Cookie'),/HttpOnly/);
+});
+test('profile settings discard privilege and ownership fields from a user submission',async()=>{
+ const fake=client(),handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
+ const response=await handle(request('/portal/settings',{username:'Player_01',bio:'My profile',avatar_source:'initials',user_id:'other-user',role:'admin'}));
+ assert.equal(response.status,303);assert.deepEqual(fake.calls,[{username:'Player_01',bio:'My profile',avatar_source:'initials'}]);
+ assert.equal((await handle(request('/portal/settings',{username:'Admin',avatar_source:'initials'}))).status,400);
+});
+test('avatars require a signed-in user and invalid stored PNGs never render as uploaded content',async()=>{
+ const anonymous=createPortalRoutes({getConfig:()=>config,makeClient:()=>client({signedIn:false})});
+ assert.equal((await anonymous(request('/portal/avatar'))).status,401);
+ const fake=client({profile:{username:'SafePlayer',avatar_source:'upload',avatar_png:'data:image/svg+xml;base64,PHN2Zz4='}});
+ const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
+ const response=await handle(request('/portal/avatar'));assert.equal(response.status,200);
+ assert.equal(response.headers.get('Content-Type'),'image/svg+xml');assert.match(await response.text(),/>SA<\/text>/);
+ assert.equal((await handle(request('/portal/avatar-upload',{avatar_png:'data:image/png;base64,bad'}))).status,400);
+});
+test('profile rendering escapes text and account summary never returns email or bio',async()=>{
+ const fake=client({profile:{username:'SafePlayer',bio:'<script>bad</script>',avatar_source:'initials'}});
+ const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
+ const account=await handle(request('/account'));const html=await account.text();
+ assert.match(html,/&lt;script&gt;bad&lt;\/script&gt;/);assert.doesNotMatch(html,/<script>bad/);
+ assert.match(account.headers.get('Content-Security-Policy'),/script-src 'self'/);
+ const summary=await(await handle(request('/portal/me'))).json();assert.equal(summary.displayName,'SafePlayer');assert.equal(summary.email,undefined);assert.equal(summary.bio,undefined);assert.equal(summary.owner,false);
 });

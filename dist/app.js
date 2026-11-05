@@ -79,9 +79,21 @@ document.querySelectorAll('[data-arena]').forEach(button=>button.addEventListene
  document.getElementById('arena-name').textContent=arena.name;document.getElementById('arena-biome').textContent=arena.biome;document.getElementById('arena-bounds').textContent=arena.bounds;
 }));
 
-// Account personalization is optional; no tracking request or session data enters localStorage.
+// Personal data remains in this response; no account tokens are stored in browser storage.
 fetch('/portal/me',{credentials:'same-origin'}).then(response=>response.ok?response.json():null).then(account=>{
- if(account?.signedIn){document.querySelector('.opponent-name').textContent=account.displayName;
- if(account.hasSkin)document.querySelector('.skin-character').style.setProperty('--player-skin','url("/portal/skin")');
- const link=document.querySelector('.account-link');if(link)link.textContent=english?'My account':'Mein Konto';}
+ if(account?.signedIn){
+  document.querySelector('.opponent-name').textContent=account.displayName;
+  if(account.hasSkin)document.querySelector('.skin-character').style.setProperty('--player-skin','url("/portal/skin")');
+  document.querySelector('.account-name').textContent=account.displayName;
+  const avatar=document.querySelector('.nav-avatar'),image=avatar.querySelector('img');
+  const minecraft=account.avatarSource==='minecraft'&&account.hasSkin;
+  avatar.classList.toggle('avatar-minecraft',minecraft);image.src=minecraft?'/portal/skin':'/portal/avatar';
+  if(minecraft){const hat=image.cloneNode();hat.classList.add('avatar-hat');avatar.append(hat);}
+  document.querySelector('.profile-menu-link').firstChild.textContent=english?'My profile ':'Mein Profil ';
+  document.querySelector('.nav-logout').hidden=false;
+  document.querySelector('.admin-menu-link').hidden=!account.owner;
+ }
 }).catch(()=>{});
+const accountMenu=document.querySelector('.account-menu');
+document.addEventListener('click',event=>{if(!accountMenu.contains(event.target))accountMenu.open=false;});
+document.addEventListener('keydown',event=>{if(event.key==='Escape')accountMenu.open=false;});

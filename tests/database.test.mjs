@@ -18,6 +18,7 @@ test('PostgreSQL enforces report isolation, owner MFA, immutable fields and dura
   `);
   const migration=(await readFile(new URL('../supabase/migrations/001_portal.sql',import.meta.url),'utf8')).replace(/^\uFEFF/,'');
   await db.exec(migration);
+  await db.exec((await readFile(new URL('../supabase/migrations/002_profiles.sql',import.meta.url),'utf8')).replace(/^\uFEFF/,''));
   const checks=(await readFile(new URL('../supabase/security-checks.sql',import.meta.url),'utf8')).replace(/^\uFEFF/,'');
   await db.exec(checks);
   await db.exec(`insert into auth.users(id) values('00000000-2222-4222-8222-000000000001');
@@ -28,6 +29,16 @@ test('PostgreSQL enforces report isolation, owner MFA, immutable fields and dura
   await assert.rejects(db.query("insert into public.portal_reports(user_id,kind,title,description) values('00000000-2222-4222-8222-000000000001','bug','Forged owner','A long enough test description.')"),/permission denied/);
   const update=await db.query("update public.portal_reports set status='resolved' returning id");
   assert.equal(update.rows.length,0);
+  await db.query("insert into public.portal_profiles(username,bio,avatar_source) values('MyPlayer','Hello','initials')");
+  await assert.rejects(db.query("update public.portal_profiles set username='Admin'"),/profile_username_valid/);
+  await db.exec(`reset role;
+   insert into auth.users(id) values('00000000-2222-4222-8222-000000000002');
+   set role authenticated;
+   set request.jwt.claims='{"sub":"00000000-2222-4222-8222-000000000002","role":"authenticated","aal":"aal1"}';`);
+  const hiddenProfile=await db.query('select * from public.portal_profiles');assert.equal(hiddenProfile.rows.length,0);
+  const changedProfile=await db.query("update public.portal_profiles set bio='Hacked' returning user_id");assert.equal(changedProfile.rows.length,0);
+  await assert.rejects(db.query("insert into public.portal_profiles(username) values('myplayer')"),/portal_username_unique/);
+  await db.query("insert into public.portal_profiles(username) values('AnotherPlayer')");
   await db.exec('reset role; set role anon;');
   await assert.rejects(db.query('select * from public.portal_reports'),/permission denied/);
  }finally{await db.close();}
