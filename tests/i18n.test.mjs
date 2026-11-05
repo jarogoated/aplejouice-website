@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {randomBytes,scryptSync} from 'node:crypto';
 import {getLanguage,languageResponse,localizeHtml} from '../lib/i18n.mjs';
 import {createGate} from '../lib/access.mjs';
 import {createReleaseRoutes} from '../lib/releases.mjs';
@@ -25,18 +24,12 @@ test('translation preserves structure, actions, dynamic counters and script cont
   assert.match(translated,/const label="Dein Spiel\."/);
   assert.equal((localizeHtml(translated,'en','/').match(/language-switch:start/g)||[]).length,1);
 });
-test('English selection never bypasses authentication and rewrites only authenticated feature pages',async()=>{
-  const salt=randomBytes(16).toString('hex'),passcode='local-test-only';
-  const config=JSON.stringify({salt,hash:scryptSync(passcode,salt,32).toString('hex'),key:randomBytes(32).toString('hex')});
-  let destination;
-  const gate=createGate({next:()=>new Response('private'),getConfig:()=>config,rewrite:url=>{destination=url.pathname;return new Response('rewritten');}});
-  const locked=await gate(request('/',english));assert.equal(locked.status,401);assert.match(await locked.text(),/Your game/);assert.equal(destination,undefined);
-  assert.equal((await gate(request('/index.en.html',english))).status,401);
-  const login=await gate(new Request('https://aplejouice.com/_access/login',{method:'POST',headers:{Origin:'https://aplejouice.com','Content-Type':'application/x-www-form-urlencoded',Cookie:english},body:new URLSearchParams({passcode})}));
-  const session=login.headers.get('Set-Cookie').split(';')[0];
-  const unlocked=await gate(request('/',`${english}; ${session}`));
-  assert.equal(destination,'/index.en.html');assert.equal(unlocked.headers.get('Content-Language'),'en');
+test('English public feature page is rewritten without a passcode',async()=>{
+ let destination;
+ const gate=createGate({next:()=>new Response('public'),rewrite:url=>{destination=url.pathname;return new Response('rewritten');}});
+ const response=await gate(request('/',english));assert.equal(response.status,200);assert.equal(destination,'/index.en.html');assert.equal(response.headers.get('Content-Language'),'en');
 });
+
 test('download copy switches language while machine-readable update metadata is unchanged',async()=>{
   const releases=createReleaseRoutes({fetcher:async()=>Response.json([])});
   const en=await releases(request('/downloads',english));

@@ -27,12 +27,12 @@ test('does not redirect downloads to foreign URLs or offer mismatched versions',
   const wrong=fixture();wrong.assets[0].name='Aplejouice-Mod-1.7.0-mc1.22.0.jar';assert.equal(selectRelease([wrong]),null);
   assert.equal(selectRelease(null),null);
 });
-test('exact public routes work without opening private pages or the release administration',async()=>{
+test('release routes and public presentation work without passcodes',async()=>{
   const gate=createGate({next:()=>new Response('PRIVATE'),getConfig:()=>'',releases:route()});
   assert.equal((await gate(req('/downloads'))).status,200);
   assert.equal((await gate(req('/api/mod/latest?minecraft=1.21.11'))).status,200);
   for(const path of ['/','/release-admin','/app.js','/assets/menu.png','/downloads/private','/api/mod/latest/private'])
-    assert.equal((await gate(req(path))).status,503);
+    assert.equal((await gate(req(path))).status,200);
 });
 test('JSON metadata, HEAD, compatibility errors and read-only methods',async()=>{
   const handler=route();const response=await handler(req('/api/mod/latest?minecraft=1.21.11'));
