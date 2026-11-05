@@ -1,4 +1,11 @@
 (() => {
+ const tabs=[...document.querySelectorAll('[data-account-tab]')],panels=[...document.querySelectorAll('[data-account-panel]')];
+ function show(){let id=location.hash.slice(1)||'overview';if(!panels.some(panel=>panel.dataset.accountPanel===id))id='overview';panels.forEach(panel=>panel.hidden=panel.dataset.accountPanel!==id);tabs.forEach(tab=>{if(tab.dataset.accountTab===id)tab.setAttribute('aria-current','page');else tab.removeAttribute('aria-current');});}
+ if(panels.length){show();addEventListener('hashchange',show);}
+ document.querySelector('.copy-account-id')?.addEventListener('click',async event=>{const button=event.currentTarget;try{await navigator.clipboard.writeText(button.dataset.accountId);button.textContent=document.documentElement.lang==='en'?'Copied':'Kopiert';}catch{}});
+ fetch('/portal/me',{credentials:'same-origin'}).then(r=>r.ok?r.json():null).then(account=>{if(account?.signedIn){const link=document.querySelector('.portal-account-link');if(link){link.querySelector('span').textContent=account.displayName;link.querySelector('img').src='/portal/avatar';}}}).catch(()=>{});
+})();
+(() => {
  const fileInput=document.getElementById('avatar-file');
  if(!fileInput)return;
  const english=document.documentElement.lang==='en';
