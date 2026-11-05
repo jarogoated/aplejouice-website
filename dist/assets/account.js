@@ -4,7 +4,7 @@
  if(panels.length){show();addEventListener('hashchange',show);}
  document.querySelector('.copy-account-id')?.addEventListener('click',async event=>{const button=event.currentTarget;try{await navigator.clipboard.writeText(button.dataset.accountId);button.textContent=document.documentElement.lang==='en'?'Copied':'Kopiert';}catch{}});
  const name=document.querySelector('.profile-identity h2')?.textContent,link=document.querySelector('.portal-account-link');
- if(name&&link){link.querySelector('span').textContent=name;link.querySelector('img').src='/portal/avatar';}
+ if(name&&link){link.querySelector('.account-name').textContent=name;link.querySelector('img').src='/portal/avatar';document.querySelector('.nav-logout')?.removeAttribute('hidden');if(document.querySelector('.profile-identity .member-badge')?.textContent==='ADMIN')document.querySelector('.admin-menu-link')?.removeAttribute('hidden');}
 
 })();
 (() => {

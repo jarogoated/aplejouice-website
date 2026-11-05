@@ -59,3 +59,9 @@ Wenn der Authenticator verloren geht, Faktor ausschließlich im eigenen Supabase
 Eigene Bilder werden im Browser zentriert zugeschnitten und als 128×128-PNG übertragen. Der Server prüft Signatur, Chunk-CRC, erlaubte Chunk-Typen, Bildmaße und die begrenzte entpackte Pixelmenge. SVG-, Metadaten- und Animations-Uploads sind ausgeschlossen. Der PNG-Inhalt wird privat beim eigenen Profil gespeichert; die Bildroute braucht eine angemeldete Sitzung. Originaldatei und Dateiname werden nicht hochgeladen.
 
 Die Datenschutzhinweise unter `/datenschutz` beschreiben die aktuelle Verwendung von Hosting, Konten, Profilen und Reports. Die tatsächlich gewählte Supabase-Region ist London (UK), nicht Deutschland. Weitere Anbieter werden nur nach eigener Konfiguration über `PORTAL_PROVIDERS` aktiviert.
+
+## Clan applications
+
+Clan applications use existing `portal_reports` records with `kind=feedback` and the fixed `mod_version=clan-application-v1` marker. No new table, migration or public grants are needed. Existing row isolation, owner MFA, audit trail and combined five-per-hour database limit apply unchanged. The admin inbox filters before pagination; the application page queries only the current user's applications. An application does not grant clan membership or any website role.
+
+Members are intentionally placeholders until real Minecraft names and ranks are supplied. Do not publish guessed roster data.

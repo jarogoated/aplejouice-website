@@ -27,7 +27,7 @@ test('translation preserves structure, actions, dynamic counters and script cont
 test('English public feature page is rewritten without a passcode',async()=>{
  let destination;
  const gate=createGate({next:()=>new Response('public'),rewrite:url=>{destination=url.pathname;return new Response('rewritten');}});
- const response=await gate(request('/',english));assert.equal(response.status,200);assert.equal(destination,'/index.en.html');assert.equal(response.headers.get('Content-Language'),'en');
+ const response=await gate(request('/',english));assert.equal(response.status,200);assert.equal(destination,'/hub.en.html');assert.equal(response.headers.get('Content-Language'),'en');
 });
 
 test('download copy switches language while machine-readable update metadata is unchanged',async()=>{

@@ -5,7 +5,7 @@ const config={url:'https://example.supabase.co',key:'public-key-only',origin:'ht
 const request=(path,form,origin='https://aplejouice.com')=>new Request('https://aplejouice.com'+path,form?{method:'POST',headers:{Origin:origin,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(form)}:{});
 const user={id:'11111111-1111-1111-1111-111111111111',email:'test@example.com',email_confirmed_at:'2026-01-01',user_metadata:{role:'admin',provider_id:'928019899211743305'}};
 function client({signedIn=true,owner=false,admin=false,reports=[],profile=null}={}){
- const calls=[];const query={select(){return this;},eq(){return this;},order(){return this;},range(){return Promise.resolve({data:reports});},limit(){return Promise.resolve({data:reports});},maybeSingle(){return Promise.resolve({data:profile});},insert(value){calls.push(value);return Promise.resolve({data:null,error:null});}};
+ const calls=[];const query={select(){return this;},eq(){return this;},neq(){return this;},order(){return this;},range(){return Promise.resolve({data:reports});},limit(){return Promise.resolve({data:reports});},maybeSingle(){return Promise.resolve({data:profile});},insert(value){calls.push(value);return Promise.resolve({data:null,error:null});}};
  return{calls,auth:{getUser:async()=>({data:{user:signedIn?user:null}}),mfa:{listFactors:async()=>({data:{totp:[],all:[]}})}},from:()=>query,rpc:async name=>({data:name==='portal_is_owner'?owner:admin})};
 }
 test('unconfigured accounts fail closed and do not save reports',async()=>{
@@ -96,4 +96,22 @@ test('profile rendering escapes text and account summary never returns email or 
  assert.match(account.headers.get('Content-Security-Policy'),/script-src 'self'/);
  assert.equal(account.headers.get('Referrer-Policy'),'same-origin');
  const summary=await(await handle(request('/portal/me'))).json();assert.equal(summary.displayName,'SafePlayer');assert.equal(summary.email,undefined);assert.equal(summary.bio,undefined);assert.equal(summary.owner,false);
+});
+
+
+test('clan applications require login and construct only safe report fields',async()=>{
+ const payload={minecraft:'ValidPlayer',experience:'Ich spiele schon lange Minecraft auf verschiedenen Servern.',motivation:'Ich möchte gemeinsam mit einem freundlichen Team spielen.',playstyle:'pvp',fairplay:'yes',user_id:'forged',status:'resolved',reply:'forged'};
+ const fake=client();const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});
+ const response=await handle(request('/portal/application',payload));assert.equal(response.status,303);assert.equal(response.headers.get('Location'),'/clan/apply?sent=1');
+ assert.deepEqual(Object.keys(fake.calls[0]).sort(),['description','kind','mod_version','title']);assert.equal(fake.calls[0].mod_version,'clan-application-v1');assert.equal(fake.calls[0].kind,'feedback');
+ const anonymous=client({signedIn:false});const locked=createPortalRoutes({getConfig:()=>config,makeClient:()=>anonymous});assert.equal((await locked(request('/portal/application',payload))).status,401);assert.equal(anonymous.calls.length,0);
+ assert.equal((await handle(request('/portal/application',{...payload,minecraft:'<script>'}))).status,400);
+ assert.equal((await handle(request('/portal/application',{...payload,fairplay:'no'}))).status,400);
+ assert.equal((await handle(request('/portal/application',payload,'https://attacker.invalid'))).status,403);
+});
+test('clan application login preserves a fixed safe destination and admin labels applications',async()=>{
+ const anonymous=createPortalRoutes({getConfig:()=>config,makeClient:()=>client({signedIn:false})});
+ const login=await (await anonymous(request('/clan/apply'))).text();assert.match(login,/name="next" value="\/clan\/apply"/);
+ const fake=client({owner:true,admin:true,reports:[{id:'11111111-abcd-abcd-abcd-111111111111',title:'Clan-Bewerbung · Test',description:'<script>unsafe</script>',kind:'feedback',mod_version:'clan-application-v1',status:'open',reply:'',created_at:'2026-11-05'}]});
+ const handle=createPortalRoutes({getConfig:()=>config,makeClient:()=>fake});const html=await(await handle(request('/270211?section=applications'))).text();assert.match(html,/Clan-Bewerbungen/);assert.match(html,/&lt;script&gt;unsafe/);assert.doesNotMatch(html,/<script>unsafe/);
 });
